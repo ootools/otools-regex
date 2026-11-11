@@ -1,0 +1,5 @@
+dist/
+dist-pack/
+upstream/
+node_modules/
+.zcode/

@@ -1,0 +1,18 @@
+{
+  "devUrl": "http://127.0.0.1:6483",
+  "developerName": "jry",
+  "displayName": "RegexLab",
+  "displayNameCN": "正则工具箱",
+  "entry": "dist/index.html",
+  "hasAd": false,
+  "icon": "🔍",
+  "inPluginPurchase": false,
+  "key": ["regex", "regexp", "正则", "正则表达式", "正则验证"],
+  "openInBrowser": false,
+  "packid": "otools-regex",
+  "quickDev": true,
+  "screenshots": [],
+  "summary": "正则编写-验证-批量校验一站式工具箱：实时高亮匹配、捕获分组、替换预览、常用正则库与速查表。",
+  "uuid": "otools-regex",
+  "version": "0.1.0"
+}
