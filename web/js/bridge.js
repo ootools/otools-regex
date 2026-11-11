@@ -1,52 +1,23 @@
 /**
- * bridge.js — OTools 宿主桥（模板 web/index.html 裁剪版）。
- * 本插件是纯前端工具，不需要文件 I/O：只探测宿主可用性、主题与语言。
- * 两条能力通道任一通即"在 OTools 里"；都不通（浏览器直开）则退回浏览器默认。
+ * bridge.js — 宿主桥的 ESM 薄封装。
+ * 桥本体按模板约定内联在 index.html（verify-plugin 校验入口页含桥字符串），
+ * 这里只做转发；window.otoolsPlugin 不存在（异常环境）时给安全默认值。
  */
 
-function wrapper() {
-  const a = (typeof window !== 'undefined' && (window.otools || window.utools)) || null;
-  return a && typeof a === 'object' ? a : null;
-}
-
-function tauriInvoke() {
-  const candidates = [window];
-  try {
-    if (window.parent && window.parent !== window) candidates.push(window.parent);
-  } catch {
-    /* cross-origin */
-  }
-  for (const c of candidates) {
-    const t = c && c.__TAURI_INTERNALS__;
-    if (t && typeof t.invoke === 'function') return t;
-  }
-  return null;
-}
+const plugin = (typeof window !== 'undefined' && window.otoolsPlugin) || {
+  available: () => false,
+  theme: () => '',
+  language: () => '',
+};
 
 export function available() {
-  return !!wrapper() || !!tauriInvoke();
+  return plugin.available();
 }
 
 export function theme() {
-  const cl = document.documentElement && document.documentElement.classList;
-  if (!cl) return '';
-  if (cl.contains('light')) return 'light';
-  if (cl.contains('dark')) return 'dark';
-  return '';
+  return plugin.theme();
 }
 
 export function language() {
-  try {
-    return (
-      (window.__OTOOLS_LOCALE__ && window.__OTOOLS_LOCALE__.locale) ||
-      (document.documentElement && document.documentElement.lang) ||
-      (typeof navigator !== 'undefined' && navigator.language) ||
-      ''
-    );
-  } catch {
-    return '';
-  }
+  return plugin.language();
 }
-
-// 统一挂到 window.otoolsPlugin，供页面其它脚本/调试用
-window.otoolsPlugin = { available, theme, language };

@@ -6,6 +6,46 @@
   <title>正则工具箱 · RegexLab</title>
   <link rel="icon" type="image/svg+xml" href="../logo.svg">
   <link rel="stylesheet" href="css/app.css">
+  <script>
+    /*
+     * OTools 宿主桥（插件唯一需要写的 JS，模板约定内联在入口页）。
+     * 本插件是纯前端工具，不需要文件 I/O：只探测宿主可用性、主题与语言。
+     * 两条能力通道任一通即「在 OTools 里」；都不通（浏览器直开）则退回浏览器默认。
+     */
+    (function () {
+      function wrapper() {
+        var a = (typeof window !== 'undefined' && (window.otools || window.utools)) || null;
+        return a && typeof a === 'object' ? a : null;
+      }
+      function tauri() {
+        var candidates = [window];
+        try { if (window.parent && window.parent !== window) candidates.push(window.parent); } catch (e) {}
+        for (var i = 0; i < candidates.length; i++) {
+          var t = candidates[i] && candidates[i].__TAURI_INTERNALS__;
+          if (t && typeof t.invoke === 'function') return t;
+        }
+        return null;
+      }
+      function available() { return !!wrapper() || !!tauri(); }
+      function theme() {
+        var cl = document.documentElement && document.documentElement.classList;
+        if (!cl) return '';
+        if (cl.contains('light')) return 'light';
+        if (cl.contains('dark')) return 'dark';
+        return '';
+      }
+      function language() {
+        try {
+          return (
+            (window.__OTOOLS_LOCALE__ && window.__OTOOLS_LOCALE__.locale) ||
+            (document.documentElement && document.documentElement.lang) ||
+            (typeof navigator !== 'undefined' && navigator.language) || ''
+          );
+        } catch (e) { return ''; }
+      }
+      window.otoolsPlugin = { available: available, theme: theme, language: language };
+    })();
+  </script>
 </head>
 <body>
   <header id="tabbar">
