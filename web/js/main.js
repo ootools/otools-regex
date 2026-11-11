@@ -8,6 +8,10 @@ import { createI18n } from './i18n.js';
 import { createEngineApi } from './engine/api.js';
 import { available, language } from './bridge.js';
 import { initTesterTab } from './tabs/tester.js';
+import { initPresetsTab } from './tabs/presets.js';
+import { initReplaceTab } from './tabs/replace.js';
+import { initBatchTab } from './tabs/batch.js';
+import { initCheatsheetTab } from './tabs/cheatsheet.js';
 
 const store = createStore();
 const state = store.loadState();
@@ -49,6 +53,8 @@ const ctx = {
       flags: state.flags,
       text: state.text,
       batchText: state.batchText,
+      replacement: state.replacement,
+      skipEmpty: state.skipEmpty,
       tab: state.tab,
     });
   },
@@ -112,6 +118,10 @@ window.addEventListener('otools-locale-changed', applyLocale);
 
 // ---------------------------------------------------------------- 启动
 ctx.tabs.tester = initTesterTab(ctx);
+ctx.tabs.presets = initPresetsTab(ctx);
+ctx.tabs.replace = initReplaceTab(ctx);
+ctx.tabs.batch = initBatchTab(ctx);
+ctx.tabs.cheatsheet = initCheatsheetTab(ctx);
 window.__rx = ctx; // 调试/测试钩子
 buildTabbar();
 ctx.goTab(TAB_ORDER.includes(state.tab) ? state.tab : 'tester');

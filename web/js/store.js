@@ -11,6 +11,8 @@ const DEFAULTS = {
   flags: 'g',
   text: '',
   batchText: '',
+  replacement: '',
+  skipEmpty: true,
   tab: 'tester',
   history: [],
 };

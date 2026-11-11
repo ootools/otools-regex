@@ -18,7 +18,7 @@ export function createEngineApi({ workerFactory } = {}) {
   let worker = null;
   let seq = 0;
   const pending = new Map(); // id -> { resolve, reject, timer, sentAt }
-  const dbg = (window.__engineDbg = { posted: 0, replies: 0, kills: 0, created: 0 });
+  const dbg = (globalThis.__engineDbg = { posted: 0, replies: 0, kills: 0, created: 0 });
 
   function killWorker() {
     if (worker) {

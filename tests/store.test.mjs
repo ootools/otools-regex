@@ -18,6 +18,8 @@ test('loadState: 空存储返回全默认值', () => {
     flags: 'g',
     text: '',
     batchText: '',
+    replacement: '',
+    skipEmpty: true,
     tab: 'tester',
     history: [],
   });
