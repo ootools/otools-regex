@@ -164,7 +164,15 @@ export function replacePreview(pattern, flags, text, replacement) {
   let count = 0;
   if (re.global) {
     re.lastIndex = 0;
-    while (re.exec(text) !== null) count++;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      count++;
+      if (m[0] === '') {
+        // 零宽匹配：手工推进，否则死循环（\s* → ' ' 空白归一化等常规用法）
+        re.lastIndex++;
+        if (re.lastIndex > text.length) break;
+      }
+    }
     // 失败的 exec 会把 lastIndex 归零，可直接复用
   } else if (re.test(text)) {
     count = 1;

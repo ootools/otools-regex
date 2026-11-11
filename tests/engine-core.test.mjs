@@ -103,6 +103,13 @@ test('replacePreview: 原生 $ 语义', () => {
   assert.deepEqual(replacePreview('(a)(b)', 'g', 'ab', '$2$1'), { result: 'ba', count: 1 });
 });
 
+test('replacePreview: 零宽匹配不死循环（\\s* 类模式）', () => {
+  // 'bbb'.replace(/a*/g, '-') === '-b-b-b-'，4 处零宽匹配
+  assert.deepEqual(replacePreview('a*', 'g', 'bbb', '-'), { result: '-b-b-b-', count: 4 });
+  // 原生语义：'a b'.replace(/\s*/g, ' ') === ' a  b '（4 处，含零宽）
+  assert.deepEqual(replacePreview('\\s*', 'g', 'a b', ' '), { result: ' a  b ', count: 4 });
+});
+
 test('findReplaceIssues: 命名组拼错', () => {
   assert.deepEqual(findReplaceIssues('(?<year>\\d{4})', '', '$<moth>'), [
     { type: 'name', ref: 'moth' },
