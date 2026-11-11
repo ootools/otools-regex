@@ -18,9 +18,11 @@ export function createEngineApi({ workerFactory } = {}) {
   let worker = null;
   let seq = 0;
   const pending = new Map(); // id -> { resolve, reject, timer, sentAt }
+  const dbg = (window.__engineDbg = { posted: 0, replies: 0, kills: 0, created: 0 });
 
   function killWorker() {
     if (worker) {
+      dbg.kills++;
       try {
         worker.terminate();
       } catch {
@@ -35,11 +37,13 @@ export function createEngineApi({ workerFactory } = {}) {
     if (worker) return worker;
     try {
       worker = makeWorker();
+      dbg.created++;
     } catch {
       worker = null;
     }
     if (!worker) return null;
     worker.onmessage = (e) => {
+      dbg.replies++;
       const { id, ok, result, error } = e.data || {};
       const p = pending.get(id);
       if (!p) return;
@@ -64,6 +68,7 @@ export function createEngineApi({ workerFactory } = {}) {
         reject(Object.assign(new Error('执行超时，疑似灾难性回溯'), { timedOut: true }));
       }, TIMEOUT_MS);
       pending.set(id, { resolve, reject, timer, sentAt });
+      dbg.posted++;
       w.postMessage({ id, ...payload });
     });
   }

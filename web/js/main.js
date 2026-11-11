@@ -7,6 +7,7 @@ import { createStore } from './store.js';
 import { createI18n } from './i18n.js';
 import { createEngineApi } from './engine/api.js';
 import { available, language } from './bridge.js';
+import { initTesterTab } from './tabs/tester.js';
 
 const store = createStore();
 const state = store.loadState();
@@ -39,7 +40,9 @@ function buildTabbar() {
 
 // ---------------------------------------------------------------- ctx
 const ctx = {
+  root: document,
   state,
+  store,
   persist() {
     store.saveState({
       pattern: state.pattern,
@@ -108,5 +111,7 @@ function applyLocale() {
 window.addEventListener('otools-locale-changed', applyLocale);
 
 // ---------------------------------------------------------------- 启动
+ctx.tabs.tester = initTesterTab(ctx);
+window.__rx = ctx; // 调试/测试钩子
 buildTabbar();
 ctx.goTab(TAB_ORDER.includes(state.tab) ? state.tab : 'tester');
