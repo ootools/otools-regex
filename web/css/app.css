@@ -194,7 +194,7 @@ label.check {
   background: transparent;
 }
 
-.hl mark { background: color-mix(in srgb, var(--accent) 28%, transparent); color: transparent; border-radius: 2px; }
+.hl mark { background: color-mix(in srgb, var(--accent) 28%, transparent); color: inherit; border-radius: 2px; }
 .hl mark.active { background: color-mix(in srgb, var(--accent) 55%, transparent); }
 
 .results {
